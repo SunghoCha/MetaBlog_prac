@@ -18,15 +18,21 @@ public class PostController {
     @GetMapping("/posts")
     public String get() {return "Hello World";}
 
+//    @PostMapping("/posts")
+//    public Map<String, String> post(@Valid @RequestBody PostCreate postCreate, BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+//            Map<String, String> errormap = new HashMap<>();
+//            fieldErrors.forEach(fieldError -> {errormap.put(fieldError.getField(), fieldError.getDefaultMessage());});
+//            return errormap;
+//        }
+//        log.info("postCreate = {}", postCreate);
+//        return Map.of();
+//    }
+
     @PostMapping("/posts")
-    public Map<String, String> post(@Valid @RequestBody PostCreate postCreate, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            Map<String, String> errormap = new HashMap<>();
-            fieldErrors.forEach(fieldError -> {errormap.put(fieldError.getField(), fieldError.getDefaultMessage());});
-            return errormap;
-        }
-        log.info("postCreate = {}", postCreate);
+    public Map<String, String> post(@Valid @RequestBody PostCreate postCreate) {
+
         return Map.of();
     }
 }
