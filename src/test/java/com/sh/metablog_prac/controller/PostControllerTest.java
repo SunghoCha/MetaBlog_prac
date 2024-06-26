@@ -33,9 +33,8 @@ class PostControllerTest {
     void test2() throws Exception {
         //expected
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title", "글 제목입니다.")
-                        .param("content", "글 내용입니다.")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"글 제목입니다.\",\"content\": \"글 내용입니다.\"}")
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("Hello World"))

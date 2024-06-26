@@ -14,7 +14,7 @@ public class PostController {
     public String get() {return "Hello World";}
 
     @PostMapping("/posts")
-    public String post(@ModelAttribute PostCreate postCreate) {
+    public String post(@RequestBody PostCreate postCreate) {
         log.info("postCreate = {}", postCreate);
         return "Hello World";
     }
