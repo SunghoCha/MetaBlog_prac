@@ -1,6 +1,7 @@
 package com.sh.metablog_prac.controller;
 
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.service.PostService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,11 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class PostController {
+
+    private final PostService postService;
+
+    public PostController(PostService postService) {
+    }
 
     @GetMapping("/posts")
     public String get() {return "Hello World";}
@@ -32,7 +38,7 @@ public class PostController {
 
     @PostMapping("/posts")
     public Map<String, String> post(@Valid @RequestBody PostCreate postCreate) {
-
+        postService.write(postCreate);
         return Map.of();
     }
 }
