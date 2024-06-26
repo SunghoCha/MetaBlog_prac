@@ -1,6 +1,9 @@
 package com.sh.metablog_prac.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
+import com.sh.metablog_prac.request.PostCreate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,10 +45,19 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 등록 요청 테스트")
     void test2() throws Exception {
+        //given
+        PostCreate postCreate = PostCreate.builder()
+                .title("글 제목입니다.")
+                .content("글 내용입니다.")
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(postCreate);
+
         //expected
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"글 제목입니다.\",\"content\": \"글 내용입니다.\"}")
+                        .content(json)
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("Hello World"))
