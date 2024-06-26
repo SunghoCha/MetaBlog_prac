@@ -23,8 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureMockMvc
 class PostControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private PostRepository postRepository;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void clean() {
@@ -50,7 +56,6 @@ class PostControllerTest {
                 .content("글 내용입니다.")
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(postCreate);
 
         //expected
@@ -70,7 +75,6 @@ class PostControllerTest {
                 .content("글 내용입니다.")
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(postCreate);
 
         //expected
@@ -95,7 +99,6 @@ class PostControllerTest {
                 .content("글 내용입니다.")
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(postCreate);
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -110,5 +113,28 @@ class PostControllerTest {
         Post post = postRepository.findAll().get(0);
         assertEquals(postCreate.getTitle(), post.getTitle());
         assertEquals(postCreate.getContent(), post.getContent());
+    }
+    
+    @Test
+    @DisplayName("글 1개 조회")
+    public void test5() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("foo")
+                .content("bar")
+                .build();
+        postRepository.save(post);
+
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(post.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(post.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(post.getContent()))
+                .andDo(MockMvcResultHandlers.print());
+
+
+    
     }
 }
