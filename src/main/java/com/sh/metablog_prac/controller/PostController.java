@@ -22,9 +22,6 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/posts")
-    public String get() {return "Hello World";}
-
 //    @PostMapping("/posts")
 //    public Map<String, String> post(@Valid @RequestBody PostCreate postCreate, BindingResult bindingResult) {
 //        if (bindingResult.hasErrors()) {
@@ -50,5 +47,10 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable(name = "postId") Long id) {
         return postService.get(id);
+    }
+
+    @GetMapping("/posts")
+    public List<PostResponse> getList() {
+        return postService.getList();
     }
 }
