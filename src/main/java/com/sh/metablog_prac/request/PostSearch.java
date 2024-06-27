@@ -2,16 +2,15 @@ package com.sh.metablog_prac.request;
 
 import lombok.*;
 
+@Builder
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostSearch {
 
-    private int page;
-    private int size;
+    @Builder.Default
+    private Integer page = 1;
 
-    @Builder
-    public PostSearch(int page, int size) {
-        this.page = page;
-        this.size = size;
-    }
+    @Builder.Default
+    private Integer size = 10;
 }

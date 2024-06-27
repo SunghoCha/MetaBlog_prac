@@ -49,8 +49,6 @@ public class PostService {
                 .build();
     }
 
-    
-
     //모든 글을 다 조회하게 되면 비용 부담, DB 문제 발생 -> 페이징 필요
     public List<PostResponse> getList(Pageable pageable) {
         //Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC,"id"));
