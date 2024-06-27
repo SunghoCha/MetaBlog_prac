@@ -7,6 +7,9 @@ import com.sh.metablog_prac.request.PostCreate;
 import com.sh.metablog_prac.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +47,13 @@ public class PostService {
                 .build();
     }
 
-    public List<PostResponse> getList() {
-        return postRepository.findAll().stream()
+    
+
+    //모든 글을 다 조회하게 되면 비용 부담, DB 문제 발생 -> 페이징 필요
+    public List<PostResponse> getList(Pageable pageable) {
+        //Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC,"id"));
+
+        return postRepository.findAll(pageable).stream()
                 .map(PostResponse::new)
                 .collect(toList()); // findAll() : 반환 데이터가 없더라도 빈 리스트를 반환해서 NPE가 발생하지 않으므로 굳이 Optional로 반환하지 않게 설계된듯
     }

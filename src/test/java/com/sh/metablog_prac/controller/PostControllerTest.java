@@ -20,6 +20,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -132,28 +136,21 @@ class PostControllerTest {
     @DisplayName("글 여러개 조회")
     public void test6() throws Exception {
         //given
-        Post post1 = Post.builder()
-                .title("foo1")
-                .content("bar1")
-                .build();
-        postRepository.save(post1);
-
-        Post post2 = Post.builder()
-                .title("foo2")
-                .content("bar2")
-                .build();
-        postRepository.save(post2);
+        List<Post> posts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title(i + "번째 글의 제목입니다.")
+                        .content(i + "번째 글의 내용입니다.")
+                        .build())
+                .toList();
+        postRepository.saveAll(posts);
         //expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(post1.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(post2.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value(post1.getTitle()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].title").value(post2.getTitle()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value(post1.getContent()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].content").value(post2.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", is(5)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(30))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("30번째 글의 제목입니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
                 .andDo(MockMvcResultHandlers.print());
 
 

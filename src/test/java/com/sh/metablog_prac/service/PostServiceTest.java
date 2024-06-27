@@ -11,8 +11,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,24 +71,33 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글 여러개 조회")
+    @DisplayName("글 1페이지 조회")
     public void test3() {
         //given
-        Post post1 = Post.builder()
-                .title("foo1")
-                .content("bar1")
-                .build();
-        postRepository.save(post1);
+//        List<Post> posts = new ArrayList<>();
+//        for (int i = 1; i <= 30; i++) {
+//            posts.add(Post.builder()
+//                            .title(i + "번째 제목입니다")
+//                            .content(i + "번째 글의 내용입니다.")
+//                            .build());
+//        }
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title(i + "번째 글의 제목입니다.")
+                        .content(i + "번째 글의 내용입니다.")
+                        .build())
+                .toList();
 
-        Post post2 = Post.builder()
-                .title("foo2")
-                .content("bar2")
-                .build();
-        postRepository.save(post2);
+        postRepository.saveAll(requestPosts);
+
+        PageRequest pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id"));
+
         //when
-        List<PostResponse> postResponses = postService.getList();
+        List<PostResponse> postResponses = postService.getList(pageable);
         //then
-        assertEquals(2L, postResponses.size());
+        assertEquals(5L, postResponses.size());
+        assertEquals("30번째 글의 제목입니다.", postResponses.get(0).getTitle());
+        assertEquals("26번째 글의 제목입니다.", postResponses.get(4).getTitle());
     }
     
     @Test
