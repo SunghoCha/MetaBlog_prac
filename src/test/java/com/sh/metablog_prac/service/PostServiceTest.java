@@ -3,6 +3,7 @@ package com.sh.metablog_prac.service;
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.response.PostResponse;
 import org.hibernate.dialect.TiDBDialect;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,10 +55,10 @@ class PostServiceTest {
                 .build();
         postRepository.save(post);
         //when
-        Post findPost = postService.get(post.getId());
+        PostResponse postResponse = postService.get(post.getId());
         //then
         assertNotNull(post);
-        assertEquals(post.getTitle(), findPost.getTitle());
-        assertEquals(post.getContent(), findPost.getContent());
+        assertEquals(post.getTitle(), postResponse.getTitle());
+        assertEquals(post.getContent(), postResponse.getContent());
     }
 }

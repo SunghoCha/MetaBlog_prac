@@ -2,6 +2,7 @@ package com.sh.metablog_prac.controller;
 
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.response.PostResponse;
 import com.sh.metablog_prac.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,7 @@ public class PostController {
      */
 
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id) {
-        Post post = postService.get(id);
-        return post;
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
+        return postService.get(id);
     }
 }

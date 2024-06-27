@@ -116,11 +116,11 @@ class PostControllerTest {
     }
     
     @Test
-    @DisplayName("글 1개 조회")
+    @DisplayName("글 1개 조회시 title 글자수는 앞글자부터 시작해서 최대 10글자이다")
     public void test5() throws Exception {
         //given
         Post post = Post.builder()
-                .title("foo")
+                .title("12345678910")
                 .content("bar")
                 .build();
         postRepository.save(post);
@@ -130,11 +130,8 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(post.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(post.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(post.getTitle().substring(0,10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(post.getContent()))
                 .andDo(MockMvcResultHandlers.print());
-
-
-    
     }
 }
