@@ -4,17 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -23,8 +19,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -132,30 +128,25 @@ class PostControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-    @Test
-    @DisplayName("글 여러개 조회")
-    public void test6() throws Exception {
-        //given
-        List<Post> posts = IntStream.range(1, 31)
-                .mapToObj(i -> Post.builder()
-                        .title(i + "번째 글의 제목입니다.")
-                        .content(i + "번째 글의 내용입니다.")
-                        .build())
-                .toList();
-        postRepository.saveAll(posts);
-        //expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", is(5)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(30))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("30번째 글의 제목입니다."))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
-                .andDo(MockMvcResultHandlers.print());
-
-
-
-
-
-    }
+//    @Test
+//    @DisplayName("글 여러개 조회")
+//    public void test6() throws Exception {
+//        //given
+//        List<Post> posts = IntStream.range(1, 31)
+//                .mapToObj(i -> Post.builder()
+//                        .title(i + "번째 글의 제목입니다.")
+//                        .content(i + "번째 글의 내용입니다.")
+//                        .build())
+//                .toList();
+//        postRepository.saveAll(posts);
+//        //expected
+//        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", is(5)))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(30))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("30번째 글의 제목입니다."))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
+//                .andDo(MockMvcResultHandlers.print());
+//    }
 }

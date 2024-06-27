@@ -3,6 +3,7 @@ package com.sh.metablog_prac.service;
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import org.hibernate.dialect.TiDBDialect;
 import org.junit.jupiter.api.Assertions;
@@ -99,10 +100,36 @@ class PostServiceTest {
         assertEquals("30번째 글의 제목입니다.", postResponses.get(0).getTitle());
         assertEquals("26번째 글의 제목입니다.", postResponses.get(4).getTitle());
     }
+
+    @Test
+    @DisplayName("글 1페이지 조회 with QueryDSL")
+    public void test4() {
+        //given
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title(i + "번째 글의 제목입니다.")
+                        .content(i + "번째 글의 내용입니다.")
+                        .build())
+                .toList();
+
+        postRepository.saveAll(requestPosts);
+
+        //PageRequest pageable = PageRequest.of(0, 5);
+
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .size(10)
+                .build();
+        //when
+        List<PostResponse> postResponses = postService.getListWithQDSL(postSearch);
+        //then
+        assertEquals(10L, postResponses.size());
+        assertEquals("30번째 글의 제목입니다.", postResponses.get(0).getTitle());
+    }
     
     @Test
     @DisplayName("글 여러개 한 번에 저장")
-    public void test4() {
+    public void test5() {
         //given
         postRepository.saveAll(List.of(
                 Post.builder()

@@ -3,7 +3,9 @@ package com.sh.metablog_prac.service;
 
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
+import com.sh.metablog_prac.repository.PostRepositoryCustom;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,5 +58,11 @@ public class PostService {
         return postRepository.findAll(pageable).stream()
                 .map(PostResponse::new)
                 .collect(toList()); // findAll() : 반환 데이터가 없더라도 빈 리스트를 반환해서 NPE가 발생하지 않으므로 굳이 Optional로 반환하지 않게 설계된듯
+    }
+
+    public List<PostResponse> getListWithQDSL(PostSearch postSearch) {
+        return postRepository.getListWithQDSL(postSearch).stream()
+                .map(PostResponse::new)
+                .collect(toList());
     }
 }
