@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.is;
@@ -128,25 +130,67 @@ class PostControllerTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-//    @Test
-//    @DisplayName("글 여러개 조회")
-//    public void test6() throws Exception {
-//        //given
-//        List<Post> posts = IntStream.range(1, 31)
-//                .mapToObj(i -> Post.builder()
-//                        .title(i + "번째 글의 제목입니다.")
-//                        .content(i + "번째 글의 내용입니다.")
-//                        .build())
-//                .toList();
-//        postRepository.saveAll(posts);
-//        //expected
-//        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", is(5)))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(30))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("30번째 글의 제목입니다."))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
-//                .andDo(MockMvcResultHandlers.print());
-//    }
+    @Test
+    @DisplayName("글 여러개 조회")
+    public void test6() throws Exception {
+        //given
+        List<Post> posts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title(i + "번째 글의 제목입니다.")
+                        .content(i + "번째 글의 내용입니다.")
+                        .build())
+                .toList();
+        postRepository.saveAll(posts);
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", is(5)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(30))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("30번째 글의 제목입니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("(QDSL) 페이징 필드값을 전달하지 않으면 PostSearch의 디폴트값(page=1&size=10)으로 동작한다.")
+    public void test7() throws Exception {
+        //given
+        List<Post> posts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title(i + "번째 글의 제목입니다.")
+                        .content(i + "번째 글의 내용입니다.")
+                        .build())
+                .toList();
+        postRepository.saveAll(posts);
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/postsWithQDSL"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(30))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value("30번째 글의 제목입니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("(QDSL) 페이지를 0 또는 1로 요청하면 첫 페이지를 가져온다.")
+    public void test8() throws Exception {
+        //given
+        List<Post> posts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title(i + "번째 글의 제목입니다.")
+                        .content(i + "번째 글의 내용입니다.")
+                        .build())
+                .toList();
+        postRepository.saveAll(posts);
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/postsWithQDSL?page=0&size=10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(30))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value("30번째 글의 제목입니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
 }

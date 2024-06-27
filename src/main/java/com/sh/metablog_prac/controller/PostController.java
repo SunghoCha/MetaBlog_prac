@@ -2,6 +2,7 @@ package com.sh.metablog_prac.controller;
 
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import com.sh.metablog_prac.service.PostService;
 import jakarta.validation.Valid;
@@ -52,7 +53,13 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(@RequestParam Pageable pageable) {
+    public List<PostResponse> getList(Pageable pageable) {
+        log.info("pageSize, pageNum, offset, sort: {}, {}, {}, {}", pageable.getPageSize(), pageable.getPageNumber(), pageable.getOffset(), pageable.getSort());
         return postService.getList(pageable);
+    }
+
+    @GetMapping("/postsWithQDSL")
+    public List<PostResponse> getListWithQDSL(@ModelAttribute PostSearch postSearch) {
+        return postService.getListWithQDSL(postSearch);
     }
 }

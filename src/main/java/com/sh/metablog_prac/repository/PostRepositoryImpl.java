@@ -19,7 +19,7 @@ public class PostRepositoryImpl implements  PostRepositoryCustom{
     public List<Post> getListWithQDSL(PostSearch postSearch) {
         return jpaQueryFactory.selectFrom(QPost.post)
                 .limit(postSearch.getSize())
-                .offset((long) (postSearch.getPage() - 1) * postSearch.getSize())
+                .offset(postSearch.getOffset())
                 .orderBy(QPost.post.id.desc())
                 .fetch();
 
