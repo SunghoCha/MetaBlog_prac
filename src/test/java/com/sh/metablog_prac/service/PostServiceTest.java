@@ -193,4 +193,27 @@ class PostServiceTest {
         assertEquals(postEdit.getTitle(), changedPost.getTitle());
         assertEquals(post.getContent(), changedPost.getContent());
     }
+
+    @Test
+    @DisplayName("editDefault 메서드를 이용한 수정 테스트")
+    public void test8() {
+        //given
+        Post post = Post.builder()
+                .title("원본 제목")
+                .content("원본 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목")
+                .content(post.getContent())
+                .build();
+        //when
+        postService.editDefault(post.getId(), postEdit);
+        //then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertEquals(postEdit.getTitle(), changedPost.getTitle());
+        assertEquals(post.getContent(), changedPost.getContent());
+    }
 }

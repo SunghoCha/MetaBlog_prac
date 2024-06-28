@@ -80,4 +80,11 @@ public class PostService {
 
         post.edit(postEditor);
     }
+
+    public void editDefault(@RequestParam Long id, @ModelAttribute PostEdit postEdit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        post.editDefault(postEdit.getTitle(), postEdit.getContent());
+    }
 }
