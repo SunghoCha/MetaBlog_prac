@@ -3,6 +3,7 @@ package com.sh.metablog_prac.service;
 
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.domain.PostEditor;
+import com.sh.metablog_prac.exception.PostNotFound;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.repository.PostRepositoryCustom;
 import com.sh.metablog_prac.request.PostCreate;
@@ -44,7 +45,7 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -70,7 +71,7 @@ public class PostService {
 
     public void edit(@RequestParam Long id, @ModelAttribute PostEdit postEdit) {
         Post post = postRepository.findById(id) // 트랜잭션 안에서 영속성 상태로 가져옴
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         PostEditor.PostEditorBuilder postEditorBuilder = post.toEditor();
 
@@ -83,14 +84,14 @@ public class PostService {
 
     public void editDefault(@RequestParam Long id, @ModelAttribute PostEdit postEdit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         post.editDefault(postEdit.getTitle(), postEdit.getContent());
     }
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         postRepository.delete(post);
     }

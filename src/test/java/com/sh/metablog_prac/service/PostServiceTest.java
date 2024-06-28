@@ -1,6 +1,7 @@
 package com.sh.metablog_prac.service;
 
 import com.sh.metablog_prac.domain.Post;
+import com.sh.metablog_prac.exception.PostNotFound;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
 import com.sh.metablog_prac.request.PostEdit;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -163,6 +165,7 @@ class PostServiceTest {
                 .build();
         //when
         postService.edit(post.getId(), postEdit);
+
         //then
         Post changedPost = postRepository.findById(post.getId())
                 .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
@@ -211,6 +214,7 @@ class PostServiceTest {
 
         //when
         postService.editDefault(post.getId(), postEdit);
+
         //then
         Post changedPost = postRepository.findById(post.getId())
                 .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다. id=" + post.getId()));
@@ -227,9 +231,59 @@ class PostServiceTest {
                 .content("내용입니다.")
                 .build();
         postRepository.save(post);
+
         //when
         postService.delete(post.getId());
+
         //then
         assertEquals(0, postRepository.count());
+    }
+    
+    @Test
+    @DisplayName("게시글 조회 실패시 예외 반환")
+    public void test10() {
+        //given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+        
+        //expected
+        assertThrows(PostNotFound.class, () -> postService.get(-1L));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 삭제 시도하면 PostNotFound 예외 발생")
+    public void test11() {
+        //given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+
+        //expected
+        assertThrows(PostNotFound.class, () -> postService.delete(-1L));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 수정 시도하면 PostNotFound 예외 발생 ")
+    public void test12() {
+        //given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정 제목")
+                .content("수정 내용")
+                .build();
+        //expected
+         assertThrows(PostNotFound.class, () -> postService.edit(-1L, postEdit));
+
+
     }
 }
