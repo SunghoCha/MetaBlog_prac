@@ -171,7 +171,7 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("수정된 항목의 내용과 수정되지 않은 항목은 원본값을 저장한 PostEdit을 통한 수정 테스트")
+    @DisplayName(" 값이 null로 전달되면 기존의 원본 값이 수정 후에도 유지된다.")
     public void test7() {
         //given
         Post post = Post.builder()
@@ -181,8 +181,8 @@ class PostServiceTest {
         postRepository.save(post);
 
         PostEdit postEdit = PostEdit.builder()
-                .title("수정된 제목")
-                .content(post.getContent())
+                .title(null)
+                .content(null)
                 .build();
         //when
         postService.edit(post.getId(), postEdit);
@@ -190,8 +190,8 @@ class PostServiceTest {
         //then
         Post changedPost = postRepository.findById(post.getId())
                 .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
-        assertEquals(postEdit.getTitle(), changedPost.getTitle());
-        assertEquals(post.getContent(), changedPost.getContent());
+        assertEquals("원본 제목", changedPost.getTitle());
+        assertEquals("원본 내용", changedPost.getContent());
     }
 
     @Test
@@ -208,12 +208,13 @@ class PostServiceTest {
                 .title("수정된 제목")
                 .content(post.getContent())
                 .build();
+
         //when
         postService.editDefault(post.getId(), postEdit);
         //then
         Post changedPost = postRepository.findById(post.getId())
                 .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다. id=" + post.getId()));
-        assertEquals(postEdit.getTitle(), changedPost.getTitle());
+        assertEquals("수정된 제목", changedPost.getTitle());
         assertEquals(post.getContent(), changedPost.getContent());
     }
 }
