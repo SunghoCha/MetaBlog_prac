@@ -1,7 +1,9 @@
 package com.sh.metablog_prac.controller;
 
 import com.sh.metablog_prac.domain.Post;
+import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.request.PostEdit;
 import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import com.sh.metablog_prac.service.PostService;
@@ -24,6 +26,7 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
+    private final PostRepository postRepository;
 
 //    @PostMapping("/posts")
 //    public Map<String, String> post(@Valid @RequestBody PostCreate postCreate, BindingResult bindingResult) {
@@ -61,5 +64,10 @@ public class PostController {
     @GetMapping("/postsWithQDSL")
     public List<PostResponse> getListWithQDSL(@ModelAttribute PostSearch postSearch) {
         return postService.getListWithQDSL(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(postId, postEdit);
     }
 }

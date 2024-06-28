@@ -3,6 +3,7 @@ package com.sh.metablog_prac.service;
 import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.request.PostEdit;
 import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import org.hibernate.dialect.TiDBDialect;
@@ -145,5 +146,51 @@ class PostServiceTest {
         List<Post> posts = postRepository.findAll();
         //then
         assertEquals(2L, posts.size());
+    }
+
+    @Test
+    @DisplayName("글 제목 수정")
+    public void test6() {
+        //given
+        Post post = Post.builder()
+                .title("foo1")
+                .content("bar1")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된foo1")
+                .build();
+        //when
+        postService.edit(post.getId(), postEdit);
+        //then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+
+        assertEquals(postEdit.getTitle(), changedPost.getTitle());
+    }
+
+    @Test
+    @DisplayName("수정된 항목의 내용과 수정되지 않은 항목은 원본값을 저장한 PostEdit을 통한 수정 테스트")
+    public void test7() {
+        //given
+        Post post = Post.builder()
+                .title("원본 제목")
+                .content("원본 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목")
+                .content(post.getContent())
+                .build();
+        //when
+        postService.edit(post.getId(), postEdit);
+
+        //then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertEquals(postEdit.getTitle(), changedPost.getTitle());
+        assertEquals(post.getContent(), changedPost.getContent());
     }
 }

@@ -2,9 +2,11 @@ package com.sh.metablog_prac.service;
 
 
 import com.sh.metablog_prac.domain.Post;
+import com.sh.metablog_prac.domain.PostEditor;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.repository.PostRepositoryCustom;
 import com.sh.metablog_prac.request.PostCreate;
+import com.sh.metablog_prac.request.PostEdit;
 import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,5 +66,18 @@ public class PostService {
         return postRepository.getListWithQDSL(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(toList());
+    }
+
+    public void edit(@RequestParam Long id, @ModelAttribute PostEdit postEdit) {
+        Post post = postRepository.findById(id) // 트랜잭션 안에서 영속성 상태로 가져옴
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        PostEditor.PostEditorBuilder postEditorBuilder = post.toEditor();
+
+        PostEditor postEditor = postEditorBuilder.title(postEdit.getTitle())
+                .content(postEdit.getContent())
+                .build();
+
+        post.edit(postEditor);
     }
 }
