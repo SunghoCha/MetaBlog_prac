@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.is;
@@ -77,8 +76,8 @@ class PostControllerTest {
 
         //expected
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
@@ -90,7 +89,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
-    void test4() throws Exception{
+    void test4() throws Exception {
         //given
         PostCreate postCreate = PostCreate.builder()
                 .title("글 제목입니다.")
@@ -100,8 +99,8 @@ class PostControllerTest {
         String json = objectMapper.writeValueAsString(postCreate);
         //when
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
@@ -112,7 +111,7 @@ class PostControllerTest {
         assertEquals(postCreate.getTitle(), post.getTitle());
         assertEquals(postCreate.getContent(), post.getContent());
     }
-    
+
     @Test
     @DisplayName("글 1개 조회시 title 글자수는 앞글자부터 시작해서 최대 10글자이다")
     public void test5() throws Exception {
@@ -128,7 +127,7 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(post.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(post.getTitle().substring(0,10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(post.getTitle().substring(0, 10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(post.getContent()))
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -146,10 +145,10 @@ class PostControllerTest {
         postRepository.saveAll(posts);
         //expected
         mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()", is(5)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(posts.get(posts.size()-1).getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(posts.get(posts.size() - 1).getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("30번째 글의 제목입니다."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
                 .andDo(MockMvcResultHandlers.print());
@@ -167,10 +166,11 @@ class PostControllerTest {
                 .toList();
         postRepository.saveAll(posts);
         //expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/postsWithQDSL"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/postsWithQDSL")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(posts.get(posts.size()-1).getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(posts.get(posts.size() - 1).getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value("30번째 글의 제목입니다."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
                 .andDo(MockMvcResultHandlers.print());
@@ -188,10 +188,11 @@ class PostControllerTest {
                 .toList();
         postRepository.saveAll(posts);
         //expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/postsWithQDSL?page=0&size=10"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/postsWithQDSL?page=0&size=10")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(posts.get(posts.size()-1).getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(posts.get(posts.size() - 1).getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value("30번째 글의 제목입니다."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].content").value("30번째 글의 내용입니다."))
                 .andDo(MockMvcResultHandlers.print());
@@ -199,7 +200,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("글 제목 수정")
-    public void test9() throws Exception{
+    public void test9() throws Exception {
         //given
         Post post = Post.builder()
                 .title("원본 제목")
@@ -215,6 +216,22 @@ class PostControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("/posts/{postId}", post.getId()) // PATCH /posts/{postId}
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    public void test10() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        postRepository.save(post);
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.delete("/posts/{postId}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
