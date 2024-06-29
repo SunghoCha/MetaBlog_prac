@@ -11,6 +11,7 @@ import org.springframework.validation.Validator;
 public class PostCreateValidator implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
+        log.info("clazz : {}", clazz);
         return PostCreate.class.isAssignableFrom(clazz);
     }
 
@@ -22,5 +23,8 @@ public class PostCreateValidator implements Validator {
             log.info("비속어 필터 동작");
             errors.rejectValue("title", "PostTitle", "타이틀에 비속어 포함");
         }
+    }
+
+    public PostCreateValidator() {
     }
 }

@@ -72,9 +72,11 @@ class PostControllerTest {
     @DisplayName("/posts 등록 요청시 title값은 필수다")
     void test3() throws Exception {
         //given
-        PostCreate postCreate = PostCreate.builder()
-                .content("글 내용입니다.")
-                .build();
+//        PostCreate postCreate = PostCreate.builder()
+//                .content("글 내용입니다.")
+//                .build();
+
+        PostCreate postCreate = new PostCreate("", "내용입니다.");
 
         String json = objectMapper.writeValueAsString(postCreate);
 
@@ -87,7 +89,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 요청입니다."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation[0].fieldName").value("title"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.validation[0].errorMessage").value("타이틀을 입력해주세요."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation[0].message").value("타이틀을 입력해주세요."))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -307,4 +309,9 @@ class PostControllerTest {
 
                 .andDo(MockMvcResultHandlers.print());
     }
+    /*
+        Spring RestDocs 사용이유 :
+        - 운영코드를 수정하지 않고 단순히 테스트코드만으로 문서 생성가능
+        - 변경된 기능에 대해 최신문서 유지 가능
+     */
 }

@@ -23,28 +23,13 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postRepository;
+    private final PostCreateValidator postCreateValidator;
 
-//    @PostMapping("/posts")
-//    public Map<String, String> post(@Valid @RequestBody PostCreate postCreate, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-//            Map<String, String> errormap = new HashMap<>();
-//            fieldErrors.forEach(fieldError -> {errormap.put(fieldError.getField(), fieldError.getDefaultMessage());});
-//            return errormap;
-//        }
-//        log.info("postCreate = {}", postCreate);
-//        return Map.of();
-//    }
-
-    @Autowired
-    PostCreateValidator postCreateValidator;
-
-    @InitBinder
+    @InitBinder("postCreate")
     public void initBinder(WebDataBinder webdataBinder) {
+        log.info("Init Binder : {}", webdataBinder);
         webdataBinder.addValidators(postCreateValidator);
     }
-
 
     @PostMapping("/posts")
     public void post(@Valid @RequestBody PostCreate postCreate) {
