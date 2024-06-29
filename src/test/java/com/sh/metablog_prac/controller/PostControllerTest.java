@@ -2,9 +2,11 @@ package com.sh.metablog_prac.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sh.metablog_prac.domain.Post;
+import com.sh.metablog_prac.exception.PostNotFound;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
 import com.sh.metablog_prac.request.PostEdit;
+import com.sh.metablog_prac.service.PostService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +40,8 @@ class PostControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private PostService postService;
 
     @BeforeEach
     void clean() {
@@ -233,6 +237,74 @@ class PostControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/posts/{postId}", post.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 조회시 PostNotFound 예외 발생")
+    void test11() throws Exception {
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("404"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(PostNotFound.MESSAGE))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 수정 시도시 PostNotFound 예외 발생")
+    void test12() throws Exception {
+        //given
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/posts/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("404"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(PostNotFound.MESSAGE))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("게시글 제목에 비속어는 포함될 수 없다")
+    void test13() throws Exception{
+        //given
+        PostCreate postCreate = PostCreate.builder()
+                .title("비속어 포함된 제목")
+                .content("내용입니다.")
+                .build();
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postCreate)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 요청입니다."))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("제목에 바보가 포함되면 InvalidRequest 예외 발생")
+    void test14() throws Exception {
+        //given
+        PostCreate postCreate = PostCreate.builder()
+                .title("바보가 포함된 제목")
+                .content("내용입니다.")
+                .build();
+        String json = objectMapper.writeValueAsString(postCreate);
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 요청입니다."))
+
                 .andDo(MockMvcResultHandlers.print());
     }
 }

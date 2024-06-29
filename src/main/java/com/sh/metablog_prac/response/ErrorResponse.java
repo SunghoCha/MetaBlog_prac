@@ -1,5 +1,6 @@
 package com.sh.metablog_prac.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,12 @@ import java.util.Map;
     }
  */
 @Getter
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class ErrorResponse {
 
     private final String code;
     private final String message;
-    private final List<ValidationTuple> validation = new ArrayList<>();
+    private final List<ErrorVO> validation = new ArrayList<>();
 
     @Builder
     public ErrorResponse(String code, String message) {
@@ -33,14 +35,7 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public void addValidation(String field, String defaultMessage) {
-        this.validation.add(new ValidationTuple(field, defaultMessage));
-    }
-
-    @Getter
-    @RequiredArgsConstructor
-    private class ValidationTuple {
-        private final String fieldName;
-        private final String errorMessage;
+    public void addValidation(ErrorVO errorVO) {
+        this.validation.add(errorVO);
     }
 }

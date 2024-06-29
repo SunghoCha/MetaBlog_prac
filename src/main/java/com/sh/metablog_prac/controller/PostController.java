@@ -1,24 +1,21 @@
 package com.sh.metablog_prac.controller;
 
-import com.sh.metablog_prac.domain.Post;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
 import com.sh.metablog_prac.request.PostEdit;
 import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import com.sh.metablog_prac.service.PostService;
+import com.sh.metablog_prac.validator.PostCreateValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -40,8 +37,18 @@ public class PostController {
 //        return Map.of();
 //    }
 
+    @Autowired
+    PostCreateValidator postCreateValidator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder webdataBinder) {
+        webdataBinder.addValidators(postCreateValidator);
+    }
+
+
     @PostMapping("/posts")
     public void post(@Valid @RequestBody PostCreate postCreate) {
+        postCreate.validate();
         postService.write(postCreate);
     }
 

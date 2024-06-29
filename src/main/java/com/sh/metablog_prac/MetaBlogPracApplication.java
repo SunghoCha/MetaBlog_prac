@@ -10,5 +10,4 @@ public class MetaBlogPracApplication {
         SpringApplication.run(MetaBlogPracApplication.class, args);
     }
 
-
 }

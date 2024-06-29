@@ -1,5 +1,6 @@
 package com.sh.metablog_prac.request;
 
+import com.sh.metablog_prac.exception.InvalidRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -19,5 +20,11 @@ public class PostCreate {
     public PostCreate(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void validate() {
+        if (title.contains("바보")) {
+            throw new InvalidRequest("title", "제목에는 바보가 들어갈 수 없습니다.");
+        }
     }
 }

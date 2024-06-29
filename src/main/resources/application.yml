@@ -7,15 +7,15 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-
   data:
     web:
       pageable:
         one-indexed-parameters: true
         default-page-size: 5
-
   datasource:
     url: jdbc:h2:mem:hodolog
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  messages:
+    basename: errors
