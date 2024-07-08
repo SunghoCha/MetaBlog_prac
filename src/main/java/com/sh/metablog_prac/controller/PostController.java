@@ -1,5 +1,6 @@
 package com.sh.metablog_prac.controller;
 
+import com.sh.metablog_prac.config.data.UserSession;
 import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
 import com.sh.metablog_prac.request.PostEdit;
@@ -24,6 +25,17 @@ public class PostController {
 
     private final PostService postService;
     private final PostCreateValidator postCreateValidator;
+
+    @GetMapping("/foo")
+    public Long foo(UserSession userSession) {
+        log.info("UserSession : {}", userSession.id);
+        return userSession.id;
+    }
+
+    @GetMapping("/bar")
+    public String bar(UserSession userSession) {
+        return "인증이 필요한 메시지";
+    }
 
     @InitBinder("postCreate")
     public void initBinder(WebDataBinder webdataBinder) {
