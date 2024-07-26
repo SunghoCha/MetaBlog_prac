@@ -1,6 +1,8 @@
 package com.sh.metablog_prac.config;
 
 import com.sh.metablog_prac.config.data.UserSession;
+import com.sh.metablog_prac.exception.Unauthorized;
+import org.apache.catalina.User;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,10 +21,13 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-//        String accessToken = webRequest.getParameter("accessToken");
-//        if (accessToken == null || accessToken.equals("")) {
-//            throw new Unauthorized();
-//        }
-        return null;
+        String accessToken = webRequest.getParameter("accessToken");
+        if (accessToken == null || accessToken.equals("")) {
+            throw new Unauthorized();
+        }
+
+        UserSession userSession = new UserSession();
+        userSession.name = accessToken;
+        return userSession;
     }
 }

@@ -8,6 +8,7 @@ import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import com.sh.metablog_prac.service.PostService;
 import com.sh.metablog_prac.validator.PostCreateValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +28,14 @@ public class PostController {
     private final PostCreateValidator postCreateValidator;
 
     @GetMapping("/foo")
-    public String foo() {
-        return "foo";
+    public String foo(UserSession userSession) {
+        log.info(">>>>>> {}", userSession.name);
+        return userSession.name;
     }
 
     @GetMapping("/bar")
-    public String bar(UserSession userSession) {
-        return "인증이 필요한 메시지";
+    public String bar() {
+        return "인증 필요없는 페이지";
     }
 
     @InitBinder("postCreate")
