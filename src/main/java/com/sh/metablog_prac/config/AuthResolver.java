@@ -19,10 +19,10 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String accessToken = webRequest.getParameter("accessToken");
-        if (accessToken == null || accessToken.equals("")) {
-            throw new Unauthorized();
-        }
+//        String accessToken = webRequest.getParameter("accessToken");
+//        if (accessToken == null || accessToken.equals("")) {
+//            throw new Unauthorized();
+//        }
         return null;
     }
 }

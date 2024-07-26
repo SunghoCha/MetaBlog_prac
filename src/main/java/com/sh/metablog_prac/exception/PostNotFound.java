@@ -1,5 +1,6 @@
 package com.sh.metablog_prac.exception;
 
+// 404 Not Found
 public class PostNotFound extends MetaBlogException {
 
     public static final String MESSAGE = "존재하지 않는 글입니다.";

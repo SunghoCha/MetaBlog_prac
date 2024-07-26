@@ -48,6 +48,8 @@ class PostControllerTest {
         postRepository.deleteAll();
     }
 
+
+    
     @Test
     @DisplayName("/posts 등록 요청 테스트")
     void test2() throws Exception {
@@ -69,7 +71,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 등록 요청시 title값은 필수다")
+    @DisplayName("글 작성 요청시 title값은 필수다")
     void test3() throws Exception {
         //given
 //        PostCreate postCreate = PostCreate.builder()
@@ -94,7 +96,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 요청시 DB에 값이 저장된다.")
+    @DisplayName("글 작성 요청시 DB에 값이 저장된다.")
     void test4() throws Exception {
         //given
         PostCreate postCreate = PostCreate.builder()

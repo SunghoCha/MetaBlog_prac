@@ -27,9 +27,8 @@ public class PostController {
     private final PostCreateValidator postCreateValidator;
 
     @GetMapping("/foo")
-    public Long foo(UserSession userSession) {
-        log.info("UserSession : {}", userSession.id);
-        return userSession.id;
+    public String foo() {
+        return "foo";
     }
 
     @GetMapping("/bar")
