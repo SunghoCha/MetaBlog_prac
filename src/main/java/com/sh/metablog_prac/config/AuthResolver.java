@@ -4,6 +4,8 @@ import com.sh.metablog_prac.config.data.UserSession;
 import com.sh.metablog_prac.domain.Session;
 import com.sh.metablog_prac.exception.Unauthorized;
 import com.sh.metablog_prac.repository.SessionRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -32,12 +34,19 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-        String accessToken = webRequest.getHeader("Authorization");
-        if (accessToken == null || accessToken.equals("")) {
+        HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        if (servletRequest == null) {
+            log.error("servletRequest null");
             throw new Unauthorized();
         }
-        log.info("accessToken : {}", accessToken);
-        // 데이터베이스 사용자 확인작업 추가 예정
+        Cookie[] cookies = servletRequest.getCookies();
+        if (cookies.length == 0) {
+            log.error("쿠키가 존재하지 않습니다.");
+            throw new Unauthorized();
+        }
+
+        String accessToken = cookies[0].getValue();
+
         Session session = sessionRepository.findByAccessToken(accessToken).orElseThrow(Unauthorized::new);
 
         return new UserSession(session.getUser().getId());
