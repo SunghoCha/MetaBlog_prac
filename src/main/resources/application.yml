@@ -12,6 +12,12 @@ spring:
     hibernate:
       ddl-auto: none
 
+meta:
+  hello:
+    name: "meta"
+    home: "seoul"
+    hobby: "programming"
+    age: 99
 ---
 spring:
   config:
@@ -49,3 +55,6 @@ spring:
   sql:
     init:
       mode: never
+
+
+

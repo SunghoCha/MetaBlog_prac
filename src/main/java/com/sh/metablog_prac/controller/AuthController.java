@@ -1,6 +1,6 @@
 package com.sh.metablog_prac.controller;
 
-import com.sh.metablog_prac.config.SecurityConfig;
+import com.sh.metablog_prac.config.AppConfig;
 import com.sh.metablog_prac.request.LoginRequest;
 import com.sh.metablog_prac.response.SessionResponse;
 import com.sh.metablog_prac.service.AuthService;
@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.util.Base64;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,7 +46,7 @@ public class AuthController {
     public SessionResponse loginV2(@RequestBody LoginRequest request) {
         log.info(">>>loginV2={}", request);
         Long userId = authService.signinV2(request);
-        String jws = Jwts.builder().subject(String.valueOf(userId)).signWith(SecurityConfig.KEY).compact();
+        String jws = Jwts.builder().subject(String.valueOf(userId)).signWith(AppConfig.KEY).compact();
 
         return new SessionResponse(jws);
 

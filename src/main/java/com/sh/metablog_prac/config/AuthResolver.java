@@ -20,6 +20,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
+    private final AppConfig appConfig;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,13 +29,16 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+
+        log.info(">>>>>>>>>> {}", appConfig.toString());
+
         String jws = webRequest.getHeader("Authorization");
         if (jws == null || jws.isEmpty()) {
             throw new Unauthorized();
         }
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .verifyWith(SecurityConfig.KEY)
+                    .verifyWith(AppConfig.KEY)
                     .build()
                     .parseSignedClaims(jws);
             log.info(">>>>> {}", claims);
