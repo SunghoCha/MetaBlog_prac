@@ -15,6 +15,6 @@ public class Unauthorized extends MetaBlogException{
 
     @Override
     public String getStatusCode() {
-        return "404";
+        return "401";
     }
 }

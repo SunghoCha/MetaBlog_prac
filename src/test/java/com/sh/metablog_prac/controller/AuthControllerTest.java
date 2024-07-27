@@ -122,4 +122,43 @@ class AuthControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath(("$.accessToken"), Matchers.notNullValue()))
                 .andDo(MockMvcResultHandlers.print());
     }
+
+
+    @Test
+    @DisplayName("로그인 성공후 권한이 필요한 페이지에 접속한다.")
+    void test4() throws Exception {
+        // given
+        User user = User.builder()
+                .name("sungho")
+                .email("TJDGH3725@gmail.com")
+                .password("1234")
+                .build();
+        Session session = user.addSession();
+        userRepository.save(user);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/foo")
+                        .header("Authorization", session.getAccessToken()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("로그인 후 검증되지 않은 세션값으로 권한이 필요한 페이지에 접속할 수 없다.")
+    void test5() throws Exception {
+        // given
+        User user = User.builder()
+                .name("sungho")
+                .email("TJDGH3725@gmail.com")
+                .password("1234")
+                .build();
+        Session session = user.addSession();
+        userRepository.save(user);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/foo")
+                        .header("Authorization", session.getAccessToken() + "none"))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andDo(MockMvcResultHandlers.print());
+    }
 }
