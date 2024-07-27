@@ -1,7 +1,10 @@
 package com.sh.metablog_prac.controller;
 
+import com.sh.metablog_prac.config.SecurityConfig;
 import com.sh.metablog_prac.request.LoginRequest;
+import com.sh.metablog_prac.response.SessionResponse;
 import com.sh.metablog_prac.service.AuthService;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.crypto.SecretKey;
 import java.time.Duration;
+import java.util.Base64;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,6 +42,16 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
+    }
+
+    @PostMapping("/auth/v2/login")
+    public SessionResponse loginV2(@RequestBody LoginRequest request) {
+        log.info(">>>loginV2={}", request);
+        Long userId = authService.signinV2(request);
+        String jws = Jwts.builder().subject(String.valueOf(userId)).signWith(SecurityConfig.KEY).compact();
+
+        return new SessionResponse(jws);
+
 
     }
 

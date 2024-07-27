@@ -1,6 +1,6 @@
 ### 로그인
 
-POST http://localhost:8080/auth/login
+POST http://localhost:8080/auth/v2/login
 Content-Type: application/json
 
 {
@@ -13,4 +13,4 @@ Content-Type: application/json
 
 GET http://localhost:8080/foo
 Content-Type: :application/json
-Cookie: SESSION=fb3b18ea-02d9-4cc4-8222-d66f7fdf6a42
+Cookie: SESSION=f2d1ae87-2146-4724-be88-b26eb0966cdc

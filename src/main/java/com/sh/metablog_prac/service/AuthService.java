@@ -18,6 +18,14 @@ public class AuthService {
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
 
+    public Long signinV2(LoginRequest request) {
+        User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
+                .orElseThrow(InvalidSigninInformation::new);
+
+        return user.getId();
+    }
+    
+    // 토큰방식
     public String signin(LoginRequest request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
                 .orElseThrow(InvalidSigninInformation::new);
