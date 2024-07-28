@@ -21,12 +21,12 @@ public class Signup {
         this.password = password;
     }
 
-    public User toEntity() {
+    public User toEntity(String encodedPassword) {
         return User.builder()
                 .account(account)
                 .name(name)
                 .email(email)
-                .password(password)
+                .password(encodedPassword)
                 .build();
     }
 }

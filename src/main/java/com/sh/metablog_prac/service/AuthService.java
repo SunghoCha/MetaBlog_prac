@@ -11,6 +11,7 @@ import com.sh.metablog_prac.repository.UserRepository;
 import com.sh.metablog_prac.request.LoginRequest;
 import com.sh.metablog_prac.request.Signup;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,16 @@ public class AuthService {
         if (userOptional.isPresent()) {
             throw new AlreadyExistsEmailException();
         }
-        userRepository.save(signup.toEntity());
+
+        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
+                16,
+                8,
+                1,
+                32,
+                64);
+
+        String encryptedPassword = encoder.encode(signup.getPassword());
+
+        userRepository.save(signup.toEntity(encryptedPassword));
     }
 }
