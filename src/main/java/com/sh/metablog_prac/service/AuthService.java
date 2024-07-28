@@ -1,22 +1,18 @@
 package com.sh.metablog_prac.service;
 
 import com.sh.metablog_prac.crypto.PasswordEncoder;
+import com.sh.metablog_prac.crypto.ScryptPasswordEncoder;
 import com.sh.metablog_prac.domain.Session;
 import com.sh.metablog_prac.domain.User;
 import com.sh.metablog_prac.exception.AlreadyExistsEmailException;
-import com.sh.metablog_prac.exception.InvalidRequest;
 import com.sh.metablog_prac.exception.InvalidSigninInformation;
-import com.sh.metablog_prac.exception.Unauthorized;
 import com.sh.metablog_prac.repository.SessionRepository;
 import com.sh.metablog_prac.repository.UserRepository;
 import com.sh.metablog_prac.request.LoginRequest;
 import com.sh.metablog_prac.request.Signup;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +21,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Long signinV2(LoginRequest request) {
 
@@ -45,8 +42,7 @@ public class AuthService {
 //                64);
         
         // Encoder 클래스 따로 생성
-        PasswordEncoder encoder = new PasswordEncoder();
-        boolean isMatched = encoder.matches(request.getPassword(), user.getPassword());
+        boolean isMatched = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (isMatched) {
             return user.getId();
         } else {
@@ -88,8 +84,7 @@ public class AuthService {
 //
 //        String encryptedPassword = encoder.encode(signup.getPassword());
 
-        PasswordEncoder encoder = new PasswordEncoder();
-        String encodedPassword = encoder.encrypt(signup.getPassword());
+        String encodedPassword = passwordEncoder.encrypt(signup.getPassword());
 
         userRepository.save(signup.toEntity(encodedPassword));
     }
