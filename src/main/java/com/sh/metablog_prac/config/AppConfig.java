@@ -2,11 +2,10 @@ package com.sh.metablog_prac.config;
 
 import io.jsonwebtoken.Jwts;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+
 import javax.crypto.SecretKey;
+import java.util.Base64;
 
 //@Configuration
 @Data

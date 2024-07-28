@@ -17,6 +17,8 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
+    private String account;
+
     private String name;
 
     private String email;
@@ -37,10 +39,11 @@ public class User {
     }
 
     @Builder
-    public User(String name, String email, String password) {
+    public User(String account, String name, String email, String password, LocalDateTime createdAt) {
+        this.account = account;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
     }
 }

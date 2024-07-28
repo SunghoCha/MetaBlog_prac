@@ -11,13 +11,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-
+  sql:
+    init:
+      mode: never
 meta:
   hello:
     name: "meta"
     home: "seoul"
     hobby: "programming"
     age: 99
+
 ---
 spring:
   config:

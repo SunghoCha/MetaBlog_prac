@@ -2,6 +2,7 @@ package com.sh.metablog_prac.controller;
 
 import com.sh.metablog_prac.config.AppConfig;
 import com.sh.metablog_prac.request.LoginRequest;
+import com.sh.metablog_prac.request.Signup;
 import com.sh.metablog_prac.response.SessionResponse;
 import com.sh.metablog_prac.service.AuthService;
 import io.jsonwebtoken.Jwts;
@@ -49,8 +50,11 @@ public class AuthController {
         String jws = Jwts.builder().subject(String.valueOf(userId)).signWith(AppConfig.KEY).compact();
 
         return new SessionResponse(jws);
+    }
 
-
+    @PostMapping("/public/signup")
+    public void singup(@RequestBody Signup signup) {
+        authService.signup(signup);
     }
 
 }
