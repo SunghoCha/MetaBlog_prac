@@ -4,9 +4,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@Profile("default")
+
 @Component
-public class ScryptPasswordEncoder implements PasswordEncoder{
+public class CustomScryptPasswordEncoder implements PasswordEncoder{
 
     private  static final SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
             16,
