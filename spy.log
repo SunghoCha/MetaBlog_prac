@@ -160,3 +160,9 @@
 1722185147375|0|statement|connection 96|url jdbc:h2:mem:hodolog|drop table if exists post cascade |drop table if exists post cascade 
 1722185147375|0|statement|connection 96|url jdbc:h2:mem:hodolog|drop table if exists session cascade |drop table if exists session cascade 
 1722185147375|0|statement|connection 96|url jdbc:h2:mem:hodolog|drop table if exists users cascade |drop table if exists users cascade 
+1722236978491|0|statement|connection 82|url jdbc:h2:mem:hodolog|drop table if exists post cascade |drop table if exists post cascade 
+1722236978492|0|statement|connection 82|url jdbc:h2:mem:hodolog|drop table if exists users cascade |drop table if exists users cascade 
+1722236978497|0|statement|connection 83|url jdbc:h2:mem:hodolog|drop table if exists post cascade |drop table if exists post cascade 
+1722236978497|0|statement|connection 83|url jdbc:h2:mem:hodolog|drop table if exists users cascade |drop table if exists users cascade 
+1722236978501|0|statement|connection 84|url jdbc:h2:mem:hodolog|drop table if exists post cascade |drop table if exists post cascade 
+1722236978501|0|statement|connection 84|url jdbc:h2:mem:hodolog|drop table if exists users cascade |drop table if exists users cascade 

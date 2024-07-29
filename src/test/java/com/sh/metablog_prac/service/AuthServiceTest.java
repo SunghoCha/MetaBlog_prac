@@ -5,7 +5,6 @@ import com.sh.metablog_prac.domain.User;
 import com.sh.metablog_prac.exception.AlreadyExistsEmailException;
 import com.sh.metablog_prac.exception.InvalidSigninInformation;
 import com.sh.metablog_prac.repository.UserRepository;
-import com.sh.metablog_prac.request.LoginRequest;
 import com.sh.metablog_prac.request.Signup;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +66,6 @@ class AuthServiceTest {
             
             여기선 encoder에 있는 rawPW와 encodedPW 비교하는 기능으로 해결
          */
-        
     }
 
     @Test
@@ -90,57 +88,5 @@ class AuthServiceTest {
                 .build();
         // when
         assertThrows(AlreadyExistsEmailException.class, () -> authService.signup(signup));
-    }
-
-    @Test
-    @DisplayName("로그인 성공")
-    void test3() {
-        // given
-//        Signup signup = Signup.builder()
-//                .account("TJDGH3725")
-//                .name("sungho")
-//                .email("TJDGH3725@gmail.com")
-//                .password("1234")
-//                .build();
-//        authService.signup(signup); // 단위테스트에서 다른 테스트 대상인 메서드에 의존하고 있음..
-
-        String encryptedPassword = passwordEncoder.encrypt("1234");
-        User user = User.builder()
-                .name("sungho")
-                .email("TJDGH3725@gmail.com")
-                .password(encryptedPassword)
-                .build();
-        userRepository.save(user);
-
-        LoginRequest request = LoginRequest.builder()
-                .email("TJDGH3725@gmail.com")
-                .password("1234")
-                .build();
-        // when
-        Long userId = authService.signinV2(request);// 로그인 시 비밀번호가 암호화되었음에도 에러 발생하지 않음 -> 성공.. 그런데 뭔가 찜찜한 테스트.. 이게 맞나?
-
-        // then
-        assertThat(userId).isNotNull();
-    }
-
-    @Test
-    @DisplayName("잘못된 비밀번호로 로그인 시도시 예외 발생")
-    void test4() {
-        // given
-        Signup signup = Signup.builder()
-                .account("TJDGH3725")
-                .name("sungho")
-                .email("TJDGH3725@gmail.com")
-                .password("1234")
-                .build();
-        authService.signup(signup); // 단위테스트에서 다른 테스트 대상인 메서드에 의존하고 있음..
-
-        LoginRequest request = LoginRequest.builder()
-                .email("TJDGH3725@gmail.com")
-                .password("99999")
-                .build();
-        // expected
-        assertThrows(InvalidSigninInformation.class, ()-> authService.signinV2(request));
-
     }
 }

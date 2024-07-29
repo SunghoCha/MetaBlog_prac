@@ -1,18 +1,14 @@
 package com.sh.metablog_prac.controller;
 
-import com.sh.metablog_prac.config.data.UserSession;
-import com.sh.metablog_prac.repository.PostRepository;
 import com.sh.metablog_prac.request.PostCreate;
 import com.sh.metablog_prac.request.PostEdit;
 import com.sh.metablog_prac.request.PostSearch;
 import com.sh.metablog_prac.response.PostResponse;
 import com.sh.metablog_prac.service.PostService;
 import com.sh.metablog_prac.validator.PostCreateValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -26,17 +22,6 @@ public class PostController {
 
     private final PostService postService;
     private final PostCreateValidator postCreateValidator;
-
-    @GetMapping("/foo")
-    public Long foo(UserSession userSession) {
-        log.info(">>>>>> {}", userSession.id);
-        return userSession.id;
-    }
-
-    @GetMapping("/bar")
-    public String bar() {
-        return "인증 필요없는 페이지";
-    }
 
     @InitBinder("postCreate")
     public void initBinder(WebDataBinder webdataBinder) {
