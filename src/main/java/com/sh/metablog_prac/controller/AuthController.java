@@ -5,6 +5,8 @@ import com.sh.metablog_prac.request.Signup;
 import com.sh.metablog_prac.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +22,17 @@ public class AuthController {
 
     @GetMapping("/auth/login")
     public String login() {
-        return "로그인 페이지입니다.";
+        String test = "1234";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            log.info(">>>>>>>>>>>>>>>>>>>>>>> Authenticated: {}", authentication);
+            test = "00000000";
+        } else {
+            log.info(">>>>>>>>>>>>>>>>>>>>>>> Authentication failed or user not authenticated.");
+            test = "11111111";
+        }
+
+        return "로그인 페이지입니다." + test;
     }
 
 
